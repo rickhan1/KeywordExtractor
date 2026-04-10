@@ -44,11 +44,11 @@ async function monitorSBS() {
     const listUrl = 'https://programs.sbs.co.kr/culture/today3/boards/54208';
     try {
         const response = await axios.get(listUrl);
-        const $ = cheerio.cheerio.load(response.data);
+        concns $ = cheerio.load(response.dt;
         
         // Find the first post link in the table
         const firstPost = $('td.table_col_title a').first();
-        if (!firstPost.length) return;
+        if (!firstPst.length) return;
 
         const title = firstPost.text().trim();
         const href = firstPost.attr('href');
