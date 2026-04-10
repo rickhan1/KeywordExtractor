@@ -14,6 +14,12 @@ const DATA_DIR = path.join(__dirname, 'data', 'daily_hints');
 if (!fs.existsSync(path.dirname(STATE_FILE))) fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true });
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
+// Security Check (Debugging)
+console.log('--- Telegram Credential Check ---');
+console.log(`Bot Token starts with: ${TELEGRAM_BOT_TOKEN ? TELEGRAM_BOT_TOKEN.substring(0, 5) : 'MISSING'}...`);
+console.log(`Chat ID starts with: ${TELEGRAM_CHAT_ID ? TELEGRAM_CHAT_ID.substring(0, 4) : 'MISSING'}...`);
+console.log('---------------------------------');
+
 // Initial State
 let state = { sbs: "0", kbs: "0" };
 if (fs.existsSync(STATE_FILE)) {
