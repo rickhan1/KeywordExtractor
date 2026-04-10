@@ -1,0 +1,40 @@
+name: Broadcast Board Monitor
+
+on:
+  schedule:
+    # Runs every hour from 10:00 to 14:00 UTC (19:00 to 23:00 KST) on weekdays
+    - cron: '0 10-14 * * 1-5'
+    # Weekly check on weekends (Once a day at 10:00 UTC / 19:00 KST)
+    - cron: '0 10 * * 0,6'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run monitoring script
+        run: node monitor.js
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+      - name: Commit and push if state changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add state/last_checked.json data/daily_hints/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update monitor state and hints [skip ci]" && git push)
